@@ -18,11 +18,22 @@ public class Agent {
     //
     // INPUTS
     // None
-    public int[] decision() {
-        int randomNum = rand.nextInt(4 - 1 + 1) + 1;
-        int[][] decisions = { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 }, { 0, 0 } };
+    public Decision decision() {
+        Decision[] decisions = { Decision.Up, Decision.Down, Decision.Left, Decision.Right, Decision.Still };
+        int randomNum = rand.nextInt(decisions.length);
 
         return decisions[randomNum];
+    }
+    
+    // Special decision method for fast mode where agents under the object choose Down
+    public Decision decisionFastMode(boolean isUnderObject) {
+        if (isUnderObject) {
+            return Decision.Down;
+        } else {
+            Decision[] decisions = { Decision.Up, Decision.Down, Decision.Left, Decision.Right, Decision.Still };
+            int randomNum = rand.nextInt(decisions.length);
+            return decisions[randomNum];
+        }
     }
 
     // void applyPenalty() -> This function applies a specified penalty to the agent
@@ -33,4 +44,11 @@ public class Agent {
         this.punishments += penalty;
     }
 
-}
+    // void getPenalties() -> This function applies a specified penalty to the agent
+    //
+    // INPUTS
+    // None
+    public int getPenalties() {
+        return this.punishments;
+    }
+} 
