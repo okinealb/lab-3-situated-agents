@@ -22,7 +22,9 @@ public class Box {
     // INPUTS
     // None
     public void moveUp() {
-        this.y++;
+        if (canMoveUp()) {
+            this.y--;  // In grid coordinates, up means decreasing y
+        }
     }
 
     // void moveDown() -> This function moves the box down one cell
@@ -30,7 +32,7 @@ public class Box {
     // INPUTS
     // None
     public void moveDown() {
-        this.y--;
+        this.y++;  // In grid coordinates, down means increasing y
     }
 
     // void moveRight() -> This function moves the box right one cell
@@ -46,7 +48,34 @@ public class Box {
     // INPUTS
     // None
     public void moveLeft() {
-        this.x--;
+        if (canMoveLeft()) {
+            this.x--;
+        }
+    }
+    
+    // Overloaded methods that check bounds
+    public void moveUp(int maxY) {
+        if (canMoveUp()) {
+            this.y--;
+        }
+    }
+
+    public void moveDown(int maxY) {
+        if (canMoveDown(maxY)) {
+            this.y++;
+        }
+    }
+
+    public void moveRight(int maxX) {
+        if (canMoveRight(maxX)) {
+            this.x++;
+        }
+    }
+
+    public void moveLeft(int maxX) {
+        if (canMoveLeft()) {
+            this.x--;
+        }
     }
 
     // boolean contains() -> This function returns whether the box contains the
@@ -55,9 +84,9 @@ public class Box {
     // INPUTS
     // - int x -> The x position coordinate
     // - int y -> The y position coordinate
-    public boolean cointains(int x, int y) {
-        boolean inXBound = x >= this.x + this.width && x <= this.x;
-        boolean inYBound = y >= this.y - height && y <= this.y;
+    public boolean isContained(int x, int y) {
+        boolean inXBound = x >= this.x && x < this.x + this.width;
+        boolean inYBound = y >= this.y && y < this.y + this.height;
 
         return inXBound && inYBound;
     }
@@ -68,11 +97,38 @@ public class Box {
     // INPUTS
     // - int x -> The x position coordinate
     // - int y -> The y position coordinate
-    boolean isBesides(int x, int y) {
-        boolean besideX = x == this.x + this.width + 1 || x == this.x - 1;
-        boolean besideY = y == this.y - this.height - 1 || y == this.y + 1;
+    boolean isBeside(int x, int y) {
+        // Check if the cell is adjacent to the box (not contained within it)
+        if (isContained(x, y)) return false;
+        
+        // Check if adjacent horizontally or vertically
+        boolean adjacentX = (x >= this.x - 1 && x <= this.x + this.width) && 
+                           (y >= this.y && y < this.y + this.height);
+        boolean adjacentY = (y >= this.y - 1 && y <= this.y + this.height) && 
+                           (x >= this.x && x < this.x + this.width);
+        
+        return adjacentX || adjacentY;
+    }
 
-        return besideX || besideY;
+    int[] getPosition() {
+        return new int[] {this.x, this.y};
+    }
+    
+    // Add bounds checking methods
+    public boolean canMoveUp() {
+        return this.y > 0;
+    }
+    
+    public boolean canMoveDown(int maxY) {
+        return this.y + this.height < maxY;
+    }
+    
+    public boolean canMoveLeft() {
+        return this.x > 0;
+    }
+    
+    public boolean canMoveRight(int maxX) {
+        return this.x + this.width < maxX;
     }
 
 }
